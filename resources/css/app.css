@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================= */
+/* 🔥 POPUP SYSTEM               */
+/* ============================= */
+
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+}
+
+.popup-overlay.active {
+    display: flex;
+}
+
+/* BOX */
+.popup-box {
+    width: 340px;
+    background: #fff;
+    border-radius: 1.2rem;
+    padding: 2rem 1.8rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,.1);
+    animation: popupFade .25s ease;
+}
+
+/* TITLE */
+.popup-title {
+    font-size: .95rem;
+    font-weight: 600;
+    color: #1e2433;
+    margin-bottom: .4rem;
+}
+
+/* DESC */
+.popup-desc {
+    font-size: .85rem;
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* ANIMATION */
+@keyframes popupFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.preview-table th,
+.preview-table td {
+    white-space: nowrap;
+}
