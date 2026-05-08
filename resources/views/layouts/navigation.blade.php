@@ -39,7 +39,7 @@
                 <a href="{{ route('trend.index') }}" class="text-gray-600 hover:text-blue-600 transition">Trend</a>
 
                 <a href="{{ route('prediction.index') }}"
-                    class="text-gray-600 hover:text-blue-600 transition">Prediksi</a>
+                    class="text-gray-600 hover:text-blue-600 transition">Priority Stock</a>
                 <a href="{{ route('motor.index') }}" class="text-gray-600 hover:text-blue-600 transition">Motor</a>
                 <a href="{{ route('settings.prediction') }}" class="text-gray-600 hover:text-blue-600 transition">Settings</a>
             </div>
@@ -116,7 +116,7 @@
            <a href="{{ route('trend.index') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Trend</a>
                 <a href="{{ route('prediction.index') }}"
-                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Prediksi</a>
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Priority Stock</a>
             <a href="{{ route('motor.index') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Motor</a>
             <a href="{{ route('settings.prediction') }}"

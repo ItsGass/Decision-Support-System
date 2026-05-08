@@ -40,10 +40,25 @@
                         </p>
                     @enderror
                 </div>
+                <!-- INPUT KATEGORI -->
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-600">
+                        Kategori
+                    </label>
+
+                    <input type="text" name="category" value="{{ old('category') }}"
+                        class="w-full border rounded-xl px-4 py-2.5 outline-none transition
+        {{ $errors->has('category') ? 'border-red-400 ring-2 ring-red-200' : 'border-gray-200 focus:ring-2 focus:ring-black' }}"
+                        placeholder="Contoh: Fast Moving / Premium / Slow Moving">
+
+                    @error('category')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <!-- 🔥 tombol hitam -->
                 <button
-                     class="w-full bg-black text-white py-2.5 rounded-xl font-medium
+                    class="w-full bg-black text-white py-2.5 rounded-xl font-medium
                     hover:bg-gray-800 hover:scale-[1.02] active:scale-95 transition duration-200">
                     Simpan
                 </button>

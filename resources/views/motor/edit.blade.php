@@ -42,6 +42,21 @@
                         </p>
                     @enderror
                 </div>
+                <!-- INPUT KATEGORI -->
+<div class="mb-5">
+    <label class="block mb-2 text-sm font-medium text-gray-600">
+        Kategori
+    </label>
+
+    <input type="text" name="category" value="{{ old('category', $motor->category) }}"
+        class="w-full border rounded-xl px-4 py-2.5 outline-none transition
+        {{ $errors->has('category') ? 'border-red-400 ring-2 ring-red-200' : 'border-gray-200 focus:ring-2 focus:ring-black focus:scale-[1.01]' }}"
+        placeholder="Contoh: Matic / Sport / Bebek">
+
+    @error('category')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+    @enderror
+</div>
 
                 <!-- 🔥 BUTTON UPDATE -->
                 <button

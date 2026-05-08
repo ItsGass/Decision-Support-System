@@ -178,138 +178,143 @@
         ══════════════════════════════════ --}}
         <div class="main-card">
 
-            {{-- Card Header: Search + info --}}
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 px-4 py-3"
-                 style="border-bottom:1px solid var(--border-muted)">
+    {{-- Card Header: Search + info --}}
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 px-4 py-3"
+         style="border-bottom:1px solid var(--border-muted)">
 
-                <div class="search-wrap">
-                    <span class="search-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                             fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                        </svg>
-                    </span>
-                    <form method="GET" action="{{ route('motor.index') }}" class="mb-0">
-                        <input type="text" name="search"
-                               value="{{ request('search') }}"
-                               oninput="this.form.submit()"
-                               placeholder="Cari nama motor…"
-                               class="search-input">
-                    </form>
-                </div>
-
-                <div class="d-flex align-items-center gap-3">
-                    @if (request('search'))
-                        <a href="{{ route('motor.index') }}"
-                           class="d-flex align-items-center gap-1 text-muted text-decoration-none"
-                           style="font-size:.83rem">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                 fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                            </svg>
-                            Reset pencarian
-                        </a>
-                    @endif
-                    <span class="badge bg-primary bg-opacity-10 text-primary fw-normal"
-                          style="font-size:.78rem;border-radius:2rem;padding:.3rem .75rem">
-                        {{ $motors->count() }} motor
-                    </span>
-                </div>
-
-            </div>
-
-            {{-- Table --}}
-            <div class="table-responsive">
-                <table class="table mb-0 motor-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center" style="width:70px">No</th>
-                            <th>Nama Motor</th>
-                            <th class="text-center" style="width:160px">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($motors as $index => $motor)
-                            <tr>
-                                <td class="text-center">
-                                    <span class="row-num">{{ $index + 1 }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        
-                                        <span class="badge fs-6 px-3 py-2 bg-primary bg-opacity-10 text-primary ">{{ $motor->nama }}</span>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-
-                                        <a href="{{ route('motor.edit', $motor->id) }}"
-                                           class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                                           style="border-radius:.5rem;font-size:.8rem;padding:.3rem .75rem">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                 fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                                            </svg>
-                                            Edit
-                                        </a>
-
-                                        <form action="{{ route('motor.destroy', $motor->id) }}"
-                                              method="POST" class="delete-form">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                    onclick="openDeletePopup(this)"
-                                                    class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
-                                                    style="border-radius:.5rem;font-size:.8rem;padding:.3rem .75rem">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                     fill="currentColor" viewBox="0 0 16 16">
-                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                                </svg>
-                                                Hapus
-                                            </button>
-                                        </form>
-
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="py-5 text-center">
-                                    <div class="empty-state-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                             fill="var(--accent)" viewBox="0 0 16 16">
-                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
-                                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
-                                        </svg>
-                                    </div>
-                                    <p class="fw-medium text-dark mb-1" style="font-size:.95rem">
-                                        {{ request('search') ? 'Motor tidak ditemukan' : 'Belum ada data motor' }}
-                                    </p>
-                                    <p class="text-muted mb-0" style="font-size:.84rem">
-                                        {{ request('search') ? 'Coba kata kunci lain atau reset pencarian.' : 'Klik tombol "+ Tambah Motor" untuk menambahkan data.' }}
-                                    </p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- Card Footer --}}
-            @if($motors->count() > 0)
-            <div class="px-4 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
-                 style="border-top:1px solid var(--border-muted);background:#fafbff">
-                <span class="text-muted" style="font-size:.8rem">
-                    Menampilkan <strong>{{ $motors->count() }}</strong> data motor
-                    @if(request('search'))
-                        untuk pencarian "<strong>{{ request('search') }}</strong>"
-                    @endif
-                </span>
-            </div>
-            @endif
-
+        <div class="search-wrap">
+            <span class="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                     fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </span>
+            <form method="GET" action="{{ route('motor.index') }}" class="mb-0">
+                <input type="text" name="search"
+                       value="{{ request('search') }}"
+                       oninput="this.form.submit()"
+                       placeholder="Cari nama motor…"
+                       class="search-input">
+            </form>
         </div>
+
+        <div class="d-flex align-items-center gap-3">
+            @if (request('search'))
+                <a href="{{ route('motor.index') }}"
+                   class="d-flex align-items-center gap-1 text-muted text-decoration-none"
+                   style="font-size:.83rem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                         fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
+                    Reset pencarian
+                </a>
+            @endif
+            <span class="badge bg-primary bg-opacity-10 text-primary fw-normal"
+                  style="font-size:.78rem;border-radius:2rem;padding:.3rem .75rem">
+                {{ $motors->count() }} motor
+            </span>
+        </div>
+
+    </div>
+
+    {{-- Table --}}
+    <div class="table-responsive">
+        <table class="table mb-0 motor-table">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width:70px">No</th>
+                    <th>Nama Motor</th>
+                    <th>Kategori</th>
+                    <th class="text-center" style="width:160px">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($motors as $index => $motor)
+                    <tr>
+                        <td class="text-center">
+                            <span class="row-num">{{ $index + 1 }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="badge fs-6 px-3 py-2 bg-primary bg-opacity-10 text-primary">{{ $motor->nama }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge px-3 py-2 bg-success bg-opacity-10 text-success" style="font-size:.85rem">
+                                {{ $motor->category }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <a href="{{ route('motor.edit', $motor->id) }}"
+                                   class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+                                   style="border-radius:.5rem;font-size:.8rem;padding:.3rem .75rem">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                         fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                                    </svg>
+                                    Edit
+                                </a>
+
+                                <form action="{{ route('motor.destroy', $motor->id) }}"
+                                      method="POST" class="delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                            onclick="openDeletePopup(this)"
+                                            class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+                                            style="border-radius:.5rem;font-size:.8rem;padding:.3rem .75rem">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                             fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                        </svg>
+                                        Hapus
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="py-5 text-center">
+                            <div class="empty-state-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                     fill="var(--accent)" viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                                </svg>
+                            </div>
+                            <p class="fw-medium text-dark mb-1" style="font-size:.95rem">
+                                {{ request('search') ? 'Motor tidak ditemukan' : 'Belum ada data motor' }}
+                            </p>
+                            <p class="text-muted mb-0" style="font-size:.84rem">
+                                {{ request('search') ? 'Coba kata kunci lain atau reset pencarian.' : 'Klik tombol "+ Tambah Motor" untuk menambahkan data.' }}
+                            </p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    {{-- Card Footer --}}
+    @if($motors->count() > 0)
+    <div class="px-4 py-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
+         style="border-top:1px solid var(--border-muted);background:#fafbff">
+        <span class="text-muted" style="font-size:.8rem">
+            Menampilkan <strong>{{ $motors->count() }}</strong> data motor
+            @if(request('search'))
+                untuk pencarian "<strong>{{ request('search') }}</strong>"
+            @endif
+        </span>
+    </div>
+    @endif
+
+</div>
 
     </div>{{-- /container --}}
 </div>

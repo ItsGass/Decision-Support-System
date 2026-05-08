@@ -353,26 +353,26 @@ EOD;
             @endforeach
         </div>
         <div style="margin-bottom: 25px; padding: 15px; border: 1px solid #d1d5db; border-radius: 8px; background-color: #f9fafb;">
-    <h4 style="margin-top: 0; color: #1f2937; margin-bottom: 8px;">👑 Hak Istimewa "Gap Filler" (Auto-Balance)</h4>
+    <h4 style="margin-top: 0; color: #1f2937; margin-bottom: 8px;">Hak Istimewa "Gap Filler" (Auto-Balance)</h4>
     <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 12px; line-height: 1.5;">
         Pilih kategori mana saja yang berhak menampung/dipotong unit saat terjadi selisih target.<br>
-        <span style="color: #047857; font-weight: 500;">💡 Info: Jika tidak ada satupun yang dicentang, fitur Auto-Balance akan MATI (unit sisa akan dibiarkan/dibuang).</span>
+        <span style="color: #047857; font-weight: 500;">Info: Jika tidak ada satupun yang dicentang, fitur Auto-Balance akan MATI (unit sisa akan dibiarkan/dibuang).</span>
     </p>
     
     <div style="display: flex; gap: 20px;">
         <label style="cursor: pointer; font-weight: bold; color: #065f46;">
             <input type="checkbox" name="gap_filler_fast" value="true" {{ ($settings['gap_filler_fast'] ?? 'true') == 'true' ? 'checked' : '' }}>
-            Fast Moving (Matic)
+            Fast Moving / Matic
         </label>
         
         <label style="cursor: pointer; font-weight: bold; color: #d97706;">
             <input type="checkbox" name="gap_filler_premium" value="true" {{ ($settings['gap_filler_premium'] ?? 'false') == 'true' ? 'checked' : '' }}>
-            Premium / Sport
+            Premium / Motor 250cc
         </label>
         
         <label style="cursor: pointer; font-weight: bold; color: #dc2626;">
             <input type="checkbox" name="gap_filler_slow" value="true" {{ ($settings['gap_filler_slow'] ?? 'false') == 'true' ? 'checked' : '' }}>
-            Slow Moving (Bebek)
+            Slow Moving / Selain Matic
         </label>
     </div>
 </div>
