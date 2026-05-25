@@ -7,6 +7,7 @@ use App\Models\Motor;
 use App\Services\GeminiService;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class TrendController extends Controller
 {
@@ -90,7 +91,8 @@ class TrendController extends Controller
                 ],
                 [
                     'skor_trend' => $item['skor_trend'],
-                    'alasan_ai'  => $item['alasan_ai']
+                    'alasan_ai'  => $item['alasan_ai'],
+                    'user_id' => Auth::id()
                 ]
             );
         }

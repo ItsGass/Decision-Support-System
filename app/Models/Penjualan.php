@@ -12,7 +12,8 @@ class Penjualan extends Model
         'motor_id',
         'tanggal',
         'jumlah',
-        'dataset_name'
+        'dataset_name',
+        'user_id'
     ];
     public function motor()
     {

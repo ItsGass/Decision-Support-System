@@ -8,6 +8,7 @@ use App\Models\Penjualan;
 use App\Models\PenjualanAnalisis;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Support\Facades\Auth;
 
 class PenjualanController extends Controller
 {
@@ -185,7 +186,8 @@ public function index()
                 'motor_id' => $row['motor_id'],
                 'tanggal'  => $row['tanggal'],
                 'jumlah'   => $row['jumlah'],
-                'dataset_name' => $dataset
+                'dataset_name' => $dataset,
+                'user_id' => Auth::id()
             ]);
         }
 
@@ -211,7 +213,8 @@ public function index()
                 'motor_id' => $row['motor_id'],
                 'jumlah'   => $row['jumlah'],
                 'percent'  => $row['percent'] ?? 0,
-                'dataset_name' => $dataset
+                'dataset_name' => $dataset,
+                'user_id' => Auth::id()
             ]);
         }
 

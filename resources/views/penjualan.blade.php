@@ -150,165 +150,163 @@
 
             {{-- ── PAGE HEADER ── --}}
             <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
-                <div>
-                    <h1 class="fw-semibold text-dark mb-1" style="font-size:1.6rem;letter-spacing:-.02em">
-                        Data Penjualan
-                    </h1>
-                    <p class="text-muted mb-0" style="font-size:.9rem">
-                        Upload dan analisis data penjualan motor
-                    </p>
-                </div>
+    <div>
+        <h1 class="fw-semibold text-dark mb-1" style="font-size:1.6rem;letter-spacing:-.02em">
+            Data Penjualan
+        </h1>
+        <p class="text-muted mb-0" style="font-size:.9rem">
+            {{ auth()->user()->role !== 'user' ? 'Upload dan analisis data penjualan motor' : 'Lihat dan pantau riwayat penjualan motor' }}
+        </p>
+    </div>
+</div>
 
+{{-- ══════════════════════════════════
+     🔵  SECTION: UPLOAD (Hanya Admin)
+     ══════════════════════════════════ --}}
+@if(auth()->user()->role !== 'user')
+    <div class="section-card mb-4">
+        <div class="card-topbar bg-primary"></div>
+        <div class="p-4">
+
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <span class="section-label bg-primary bg-opacity-10 text-primary">Upload</span>
+                <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">Data Penjualan</h2>
             </div>
 
-            {{-- ══════════════════════════════════
-             🔵  SECTION: UPLOAD
-            ══════════════════════════════════ --}}
-            <div class="section-card mb-4">
-                <div class="card-topbar bg-primary"></div>
-                <div class="p-4">
+            <form action="{{ route('penjualan.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <span class="section-label bg-primary bg-opacity-10 text-primary">Upload</span>
-                        <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">Data Penjualan</h2>
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label fw-medium" style="font-size:.85rem">Nama Dataset</label>
+                        <input type="text" name="dataset_name" class="form-control"
+                            value="{{ old('dataset_name', session('dataset_name')) }}"
+                            placeholder="Contoh: P1 Penjualan" style="border-radius:.6rem;font-size:.875rem">
                     </div>
 
+                    <div class="col-12 col-md-5">
+                        <label class="form-label fw-medium" style="font-size:.85rem">File Excel (.xlsx)</label>
+                        <input type="file" name="file" class="form-control form-control-file-custom"
+                            accept=".xlsx,.xls,.csv" style="border-radius:.6rem;font-size:.875rem">
+                    </div>
 
+                    <div class="col-12 col-md-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit"
+                                class="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem;font-weight:500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
+                                </svg>
+                                Upload
+                            </button>
 
-                    <form action="{{ route('penjualan.upload') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="row g-3 align-items-end">
-
-                            <div class="col-12 col-md-4">
-                                <label class="form-label fw-medium" style="font-size:.85rem">Nama Dataset</label>
-                                <input type="text" name="dataset_name" class="form-control"
-                                    value="{{ old('dataset_name', session('dataset_name')) }}"
-                                    placeholder="Contoh: P1 Penjualan" style="border-radius:.6rem;font-size:.875rem">
-                            </div>
-
-                            <div class="col-12 col-md-5">
-                                <label class="form-label fw-medium" style="font-size:.85rem">File Excel (.xlsx)</label>
-                                <input type="file" name="file" class="form-control form-control-file-custom"
-                                    accept=".xlsx,.xls,.csv" style="border-radius:.6rem;font-size:.875rem">
-                            </div>
-
-                            <div class="col-12 col-md-3">
-                                <div class="d-flex gap-2">
-
-                                    <button type="submit"
-                                        class="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-1"
-                                        style="border-radius:.6rem;font-size:.875rem;font-weight:500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path
-                                                d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-                                        </svg>
-                                        Upload
-                                    </button>
-
-                                    <a href="{{ asset('template/Template Penjualan.xlsx') }}"
-                                        class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-1"
-                                        style="border-radius:.6rem;font-size:.875rem" title="Download Template">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path
-                                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                                        </svg>
-                                        Template
-                                    </a>
-
-                                </div>
-                            </div>
-
+                            <a href="{{ asset('template/Template Penjualan.xlsx') }}"
+                                class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem" title="Download Template">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                                </svg>
+                                Template
+                            </a>
                         </div>
-
-                        @if ($errors->any())
-                            <div class="alert alert-danger d-flex align-items-start gap-2 mt-3 mb-0 py-2"
-                                style="border-radius:.6rem;font-size:.85rem">
-                                <ul class="mb-0 ps-2">
-                                    @foreach ($errors->all() as $e)
-                                        <li>{{ $e }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger d-flex align-items-start gap-2 mt-3 mb-0 py-2"
+                        style="border-radius:.6rem;font-size:.85rem">
+                        <ul class="mb-0 ps-2">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </form>
+        </div>
+    </div>
+@endif
 
             {{-- ══════════════════════════════════
      📦 SECTION: DATA TERSIMPAN
 ══════════════════════════════════ --}}
-<div class="section-card mb-4">
-    <div class="card-topbar bg-success"></div>
-    <div class="p-4">
+            <div class="section-card mb-4">
+                <div class="card-topbar bg-success"></div>
+                <div class="p-4">
 
-        <div class="d-flex align-items-center gap-2 mb-4">
-            <span class="section-label bg-success bg-opacity-10 text-success">Select</span>
-            <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">Data Penjualan</h2>
-        </div>
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <span class="section-label bg-success bg-opacity-10 text-success">Select</span>
+                        <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">Data Penjualan</h2>
+                    </div>
 
-        {{-- Filter --}}
-        <div class="row g-3 align-items-end mb-4">
-            <div class="col-12 col-md-4">
-                <label class="form-label fw-medium" style="font-size:.85rem">Tipe Data</label>
-                <select id="filterTipe" class="form-select" style="border-radius:.6rem;font-size:.875rem">
-                    <option value="">-- Pilih Tipe --</option>
-                    <option value="penjualan">Penjualan</option>
-                    <option value="analisis">Penjualan Analisis</option>
-                </select>
+                    {{-- Filter --}}
+                    <div class="row g-3 align-items-end mb-4">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-medium" style="font-size:.85rem">Tipe Data</label>
+                            <select id="filterTipe" class="form-select" style="border-radius:.6rem;font-size:.875rem">
+                                <option value="">Pilih Tipe</option>
+                                <option value="penjualan">Penjualan</option>
+                                <option value="analisis">Penjualan Analisis</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-medium" style="font-size:.85rem">Dataset</label>
+                            <select id="filterDataset" class="form-select" style="border-radius:.6rem;font-size:.875rem"
+                                disabled>
+                                <option value="">Pilih Dataset</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <button id="btnLoad"
+                                class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem;font-weight:500" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11" />
+                                </svg>
+                                Tampilkan
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Tabel --}}
+                    <div id="tabelWrapper" style="display:none">
+                        <div class="table-responsive"
+                            style="border-radius:.6rem;border:1px solid var(--border-muted);overflow:hidden">
+                            <table class="table table-hover mb-0 preview-table">
+                                <thead id="tabelHead"></thead>
+                                <tbody id="tabelBody"></tbody>
+                            </table>
+                        </div>
+                        <p class="text-muted mt-2 mb-0" style="font-size:.8rem" id="tabelInfo"></p>
+                        <div class="d-flex justify-content-end mt-3">
+                            <button id="btnReset" class="btn btn-outline-secondary d-flex align-items-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                    <path fill-rule="evenodd"
+                                        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z" />
+                                </svg>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Empty / Loading state --}}
+                    <div id="tabelEmpty" class="text-center py-4 text-muted" style="font-size:.875rem">
+                        Pilih tipe dan dataset untuk menampilkan data.
+                    </div>
+
+                </div>
             </div>
-            <div class="col-12 col-md-4">
-                <label class="form-label fw-medium" style="font-size:.85rem">Dataset</label>
-                <select id="filterDataset" class="form-select" style="border-radius:.6rem;font-size:.875rem" disabled>
-                    <option value="">-- Pilih Dataset --</option>
-                </select>
-            </div>
-            <div class="col-12 col-md-2">
-                <button id="btnLoad" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1"
-                    style="border-radius:.6rem;font-size:.875rem;font-weight:500" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11"/>
-                    </svg>
-                    Tampilkan
-                </button>
-            </div>
-        </div>
-
-        {{-- Tabel --}}
-        <div id="tabelWrapper" style="display:none">
-            <div class="table-responsive" style="border-radius:.6rem;border:1px solid var(--border-muted);overflow:hidden">
-                <table class="table table-hover mb-0 preview-table">
-                    <thead id="tabelHead"></thead>
-                    <tbody id="tabelBody"></tbody>
-                </table>
-            </div>
-            <p class="text-muted mt-2 mb-0" style="font-size:.8rem" id="tabelInfo"></p>
-            <div class="d-flex justify-content-end mt-3">
-    <button id="btnReset" class="btn btn-outline-secondary d-flex align-items-center gap-1"
-        style="border-radius:.6rem;font-size:.875rem">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
-        </svg>
-        Reset
-    </button>
-</div>
-        </div>
-
-        {{-- Empty / Loading state --}}
-        <div id="tabelEmpty" class="text-center py-4 text-muted" style="font-size:.875rem">
-            Pilih tipe dan dataset untuk menampilkan data.
-        </div>
-
-    </div>
-</div>
 
 
 
@@ -545,146 +543,159 @@
                     </div>
                 </div>
             @else
-                {{-- Empty state --}}
-                <div class="section-card">
-                    <div class="card-topbar bg-success"></div>
-                    <div class="p-5 text-center">
-                        <div class="empty-state-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                fill="var(--accent)" viewBox="0 0 16 16">
-                                <path
-                                    d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 5.5zM8.5 6.5a.5.5 0 0 0-1 0V9H5a.5.5 0 0 0 0 1h2.5v2.5a.5.5 0 0 0 1 0V10H11a.5.5 0 0 0 0-1H8.5z" />
-                            </svg>
-                        </div>
-                        <p class="fw-medium text-dark mb-1" style="font-size:.95rem">Belum Ada Preview</p>
-                        <p class="text-muted mb-0" style="font-size:.84rem">
-                            Upload file Excel untuk melihat preview data penjualan di sini.
-                        </p>
-                    </div>
-                </div>
-
-            @endif
+    {{-- 🔥 Tambahkan ID di sini --}}
+    <div class="section-card mb-4" id="emptyStateCard">
+        <div class="card-topbar bg-success"></div>
+        <div class="p-5 text-center">
+            <div class="empty-state-icon" style="background:#f1f5f9">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                    fill="var(--accent)" viewBox="0 0 16 16">
+                    <path
+                        d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 5.5zM8.5 6.5a.5.5 0 0 0-1 0V9H5a.5.5 0 0 0 0 1h2.5v2.5a.5.5 0 0 0 1 0V10H11a.5.5 0 0 0 0-1H8.5z" />
+                </svg>
+            </div>
+            <p class="fw-medium text-dark mb-1" style="font-size:.95rem">Belum Ada Data yang Ditampilkan</p>
+            <p class="text-muted mb-0" style="font-size:.84rem">
+                {{-- 🔒 Teks menyesuaikan Role --}}
+                @if(auth()->user()->role !== 'user')
+                    Upload file Excel untuk melihat preview, atau pilih dataset pada Data Tersimpan.
+                @else
+                    Silakan pilih tipe dan dataset pada kolom Data Tersimpan di atas untuk melihat data penjualan.
+                @endif
+            </p>
+        </div>
+    </div>
+@endif
 
         </div>{{-- /container --}}
     </div>
 
-<script>
-(function () {
-    const datasets = {
-        penjualan: @json($datasetPenjualan),
-        analisis:  @json($datasetAnalisis),
-    };
+    <script>
+    (function() {
+        const datasets = {
+            penjualan: @json($datasetPenjualan),
+            analisis: @json($datasetAnalisis),
+        };
 
-    const selTipe    = document.getElementById('filterTipe');
-    const selDataset = document.getElementById('filterDataset');
-    const btnLoad    = document.getElementById('btnLoad');
-    const wrapper    = document.getElementById('tabelWrapper');
-    const empty      = document.getElementById('tabelEmpty');
-    const thead      = document.getElementById('tabelHead');
-    const tbody      = document.getElementById('tabelBody');
-    const info       = document.getElementById('tabelInfo');
+        const selTipe = document.getElementById('filterTipe');
+        const selDataset = document.getElementById('filterDataset');
+        const btnLoad = document.getElementById('btnLoad');
+        const wrapper = document.getElementById('tabelWrapper');
+        const empty = document.getElementById('tabelEmpty');
+        const thead = document.getElementById('tabelHead');
+        const tbody = document.getElementById('tabelBody');
+        const info = document.getElementById('tabelInfo');
+        
+        // 🔥 TANGKAP ELEMEN EMPTY STATE UTAMA
+        const mainEmptyStateCard = document.getElementById('emptyStateCard');
 
-    selTipe.addEventListener('change', function () {
-        const tipe = this.value;
-        selDataset.innerHTML = '<option value="">-- Pilih Dataset --</option>';
-        selDataset.disabled = true;
-        btnLoad.disabled = true;
-        wrapper.style.display = 'none';
-        empty.textContent = 'Pilih tipe dan dataset untuk menampilkan data.';
+        selTipe.addEventListener('change', function() {
+            const tipe = this.value;
+            selDataset.innerHTML = '<option value="">-- Pilih Dataset --</option>';
+            selDataset.disabled = true;
+            btnLoad.disabled = true;
+            wrapper.style.display = 'none';
+            empty.textContent = 'Pilih tipe dan dataset untuk menampilkan data.';
 
-        if (tipe && datasets[tipe]) {
-            datasets[tipe].forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
-                selDataset.appendChild(opt);
-            });
-            selDataset.disabled = false;
-        }
-    });
+            if (tipe && datasets[tipe]) {
+                datasets[tipe].forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d;
+                    opt.textContent = d;
+                    selDataset.appendChild(opt);
+                });
+                selDataset.disabled = false;
+            }
+        });
 
-    selDataset.addEventListener('change', function () {
-        btnLoad.disabled = !this.value;
-    });
+        selDataset.addEventListener('change', function() {
+            btnLoad.disabled = !this.value;
+        });
 
-    btnLoad.addEventListener('click', function () {
-        const tipe    = selTipe.value;
-        const dataset = selDataset.value;
-        if (!tipe || !dataset) return;
+        btnLoad.addEventListener('click', function() {
+            const tipe = selTipe.value;
+            const dataset = selDataset.value;
+            if (!tipe || !dataset) return;
 
-        empty.textContent = 'Memuat data...';
-        wrapper.style.display = 'none';
+            empty.textContent = 'Memuat data...';
+            wrapper.style.display = 'none';
 
-        fetch(`{{ route('penjualan.loadData') }}?tipe=${tipe}&dataset_name=${encodeURIComponent(dataset)}`)
-            .then(r => r.json())
-            .then(data => {
-                if (!data.length) {
-                    empty.textContent = 'Data kosong.';
-                    return;
-                }
+            fetch(`{{ route('penjualan.loadData') }}?tipe=${tipe}&dataset_name=${encodeURIComponent(dataset)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.length) {
+                        empty.textContent = 'Data kosong.';
+                        return;
+                    }
 
-                // Header
-                if (tipe === 'penjualan') {
-                    thead.innerHTML = `<tr>
-                        <th style="width:36px">#</th>
-                        <th>Motor</th>
-                        <th class="text-center">Tanggal</th>
-                        <th class="text-center">Jumlah</th>
-                    </tr>`;
-                } else {
-                    thead.innerHTML = `<tr>
-                        <th style="width:36px">#</th>
-                        <th>Motor</th>
-                        <th class="text-center">Jumlah</th>
-                        <th class="text-center">Persentase</th>
-                    </tr>`;
-                }
-
-                // Body
-                tbody.innerHTML = data.map((row, i) => {
+                    // Header
                     if (tipe === 'penjualan') {
-                        return `<tr>
-                            <td class="text-muted">${i + 1}</td>
-                            <td class="fw-medium">${row.motor?.nama ?? '-'}</td>
-                            <td class="text-center">${row.tanggal ?? '-'}</td>
-                            <td class="text-center fw-semibold">${row.jumlah}</td>
+                        thead.innerHTML = `<tr>
+                            <th style="width:36px">#</th>
+                            <th>Motor</th>
+                            <th class="text-center">Tanggal</th>
+                            <th class="text-center">Jumlah</th>
                         </tr>`;
                     } else {
-                        const pct = parseFloat(row.percent ?? 0).toFixed(1);
-                        return `<tr>
-                            <td class="text-muted">${i + 1}</td>
-                            <td class="fw-medium">${row.motor?.nama ?? '-'}</td>
-                            <td class="text-center fw-semibold">${row.jumlah}</td>
-                            <td class="text-center">
-                                <span class="pct-badge" style="background:rgba(99,102,241,.1);color:#6366f1">
-                                    ${pct}%
-                                </span>
-                            </td>
+                        thead.innerHTML = `<tr>
+                            <th style="width:36px">#</th>
+                            <th>Motor</th>
+                            <th class="text-center">Jumlah</th>
+                            <th class="text-center">Persentase</th>
                         </tr>`;
                     }
-                }).join('');
 
-                info.textContent = `${data.length} baris ditemukan`;
-                wrapper.style.display = 'block';
-                empty.textContent = '';
-            })
-            .catch(() => {
-                empty.textContent = 'Gagal memuat data. Coba lagi.';
-            });
-    });
+                    // Body
+                    tbody.innerHTML = data.map((row, i) => {
+                        if (tipe === 'penjualan') {
+                            return `<tr>
+                                <td class="text-muted">${i + 1}</td>
+                                <td class="fw-medium">${row.motor?.nama ?? '-'}</td>
+                                <td class="text-center">${row.tanggal ?? '-'}</td>
+                                <td class="text-center fw-semibold">${row.jumlah}</td>
+                            </tr>`;
+                        } else {
+                            const pct = parseFloat(row.percent ?? 0).toFixed(1);
+                            return `<tr>
+                                <td class="text-muted">${i + 1}</td>
+                                <td class="fw-medium">${row.motor?.nama ?? '-'}</td>
+                                <td class="text-center fw-semibold">${row.jumlah}</td>
+                                <td class="text-center">
+                                    <span class="pct-badge" style="background:rgba(99,102,241,.1);color:#6366f1;padding:.25rem .65rem;border-radius:2rem;font-size:.75rem;font-weight:600">
+                                        ${pct}%
+                                    </span>
+                                </td>
+                            </tr>`;
+                        }
+                    }).join('');
 
-    document.getElementById('btnReset').addEventListener('click', function () {
-    selTipe.value = '';
-    selDataset.innerHTML = '<option value="">-- Pilih Dataset --</option>';
-    selDataset.disabled = true;
-    btnLoad.disabled = true;
-    wrapper.style.display = 'none';
-    tbody.innerHTML = '';
-    thead.innerHTML = '';
-    info.textContent = '';
-    empty.textContent = 'Pilih tipe dan dataset untuk menampilkan data.';
-});
-})();
+                    info.textContent = `${data.length} baris ditemukan`;
+                    wrapper.style.display = 'block';
+                    empty.textContent = '';
+                    
+                    // 🔥 MANTRA PENGHILANG EMPTY STATE UTAMA
+                    if (mainEmptyStateCard) mainEmptyStateCard.style.display = 'none';
+                })
+                .catch(() => {
+                    empty.textContent = 'Gagal memuat data. Coba lagi.';
+                });
+        });
+
+        document.getElementById('btnReset').addEventListener('click', function() {
+            selTipe.value = '';
+            selDataset.innerHTML = '<option value="">-- Pilih Dataset --</option>';
+            selDataset.disabled = true;
+            btnLoad.disabled = true;
+            wrapper.style.display = 'none';
+            tbody.innerHTML = '';
+            thead.innerHTML = '';
+            info.textContent = '';
+            empty.textContent = 'Pilih tipe dan dataset untuk menampilkan data.';
+            
+            // 🔥 MANTRA PEMANGGIL KEMBALI EMPTY STATE UTAMA
+            if (mainEmptyStateCard) mainEmptyStateCard.style.display = 'block';
+        });
+    })();
 </script>
 
 </x-app-layout>

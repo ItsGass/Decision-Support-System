@@ -131,7 +131,7 @@ class PredictionController extends Controller
         });
 
         // Flash message akademis untuk menandakan arsitektur Hybrid berhasil jalan
-        session()->now('success', 'Prediksi Hybrid (SAW + Trend Banten + Sistem Pakar) berhasil di-generate secara presisi.');
+        session()->now('success', 'Prediksi Hybrid.');
 
         return $results;
     }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Motor;
 use App\Models\Stok;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class StokController extends Controller
 {
@@ -158,7 +159,8 @@ class StokController extends Controller
             // 🔥 KUNCI: Cari yang motor_id DAN snapshot_name-nya sama
             $stok = Stok::firstOrNew([
                 'motor_id' => $item['motor_id'],
-                'snapshot_name' => $snapshot // Masukin ini biar dia bikin baris baru di DB
+                'snapshot_name' => $snapshot, // Masukin ini biar dia bikin baris baru di DB
+                'user_id' => Auth::id(),
             ]);
 
             // 🔥 Kalo mau dia nambahin (7+7=14) tetep pake += 

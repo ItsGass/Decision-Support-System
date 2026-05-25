@@ -46,10 +46,16 @@
                         Kategori
                     </label>
 
-                    <input type="text" name="category" value="{{ old('category') }}"
-                        class="w-full border rounded-xl px-4 py-2.5 outline-none transition
-        {{ $errors->has('category') ? 'border-red-400 ring-2 ring-red-200' : 'border-gray-200 focus:ring-2 focus:ring-black' }}"
-                        placeholder="Contoh: Fast Moving / Premium / Slow Moving">
+                    <select name="category" 
+                        class="w-full border rounded-xl px-4 py-2.5 outline-none transition bg-white
+                        {{ $errors->has('category') ? 'border-red-400 ring-2 ring-red-200' : 'border-gray-200 focus:ring-2 focus:ring-black' }}">
+                        
+                        <option value="" disabled {{ old('category') ? '' : 'selected' }}>-- Pilih Kategori Motor --</option>
+                        <option value="fast_moving" {{ old('category') == 'fast_moving' ? 'selected' : '' }}>Fast Moving</option>
+                        <option value="slow_moving" {{ old('category') == 'slow_moving' ? 'selected' : '' }}>Slow Moving</option>
+                        <option value="premium" {{ old('category') == 'premium' ? 'selected' : '' }}>Premium</option>
+                        
+                    </select>
 
                     @error('category')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

@@ -118,107 +118,96 @@
         <div class="container-xl px-0">
 
             {{-- ── PAGE HEADER ── --}}
-            <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
-                <div>
-                    <h1 class="fw-semibold text-dark mb-1" style="font-size:1.6rem;letter-spacing:-.02em">
-                        Manajemen Stok
-                    </h1>
-                    <p class="text-muted mb-0" style="font-size:.9rem">
-                        Kelola stok motor untuk kebutuhan analisis
-                    </p>
-                </div>
-                
+<div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+        <h1 class="fw-semibold text-dark mb-1" style="font-size:1.6rem;letter-spacing:-.02em">
+            Manajemen Stok
+        </h1>
+        <p class="text-muted mb-0" style="font-size:.9rem">
+            {{ auth()->user()->role !== 'user' ? 'Kelola stok motor untuk kebutuhan analisis' : 'Lihat status stok motor saat ini' }}
+        </p>
+    </div>
+</div>
+
+{{-- ══════════════════════════════════
+     🔵  SECTION: UPLOAD (Hanya Muncul Jika Bukan 'user')
+     ══════════════════════════════════ --}}
+@if(auth()->user()->role !== 'user')
+    <div class="section-card mb-4">
+        <div class="card-topbar bg-primary"></div>
+
+        <div class="p-4">
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <span class="section-label bg-primary bg-opacity-10 text-primary">Upload</span>
+                <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">Data Sisa Stok</h2>
             </div>
 
-            {{-- ══════════════════════════════════
-             🔵  SECTION: UPLOAD
-        ══════════════════════════════════ --}}
-            <div class="section-card mb-4">
-                <div class="card-topbar bg-primary"></div>
+            <form action="{{ route('stok.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-                <div class="p-4">
+                <div class="row g-3 align-items-end">
 
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <span class="section-label bg-primary bg-opacity-10 text-primary">Upload</span>
-                        <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">Data Sisa Stok</h2>
+                    {{-- Nama Snapshot --}}
+                    <div class="col-12 col-md-4">
+                        <label class="form-label fw-medium" style="font-size:.85rem">Nama Snapshot</label>
+                        <input type="text" name="snapshot_name" class="form-control"
+                            value="{{ old('snapshot_name', session('snapshot_name')) }}"
+                            placeholder="Contoh: P1 Stok" style="border-radius:.6rem;font-size:.875rem">
                     </div>
 
+                    {{-- File --}}
+                    <div class="col-12 col-md-5">
+                        <label class="form-label fw-medium" style="font-size:.85rem">File Excel (.xlsx)</label>
+                        <input type="file" name="file" class="form-control form-control-file-custom"
+                            accept=".xlsx,.xls,.csv" style="border-radius:.6rem;font-size:.875rem">
+                    </div>
 
-
-                    <form action="{{ route('stok.upload') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="row g-3 align-items-end">
-
-                            {{-- Nama Snapshot --}}
-                            <div class="col-12 col-md-4">
-                                <label class="form-label fw-medium" style="font-size:.85rem">Nama Snapshot</label>
-                                <input type="text" name="snapshot_name" class="form-control"
-                                    value="{{ old('snapshot_name', session('snapshot_name')) }}"
-                                    placeholder="Contoh: P1 Stok" style="border-radius:.6rem;font-size:.875rem">
-                            </div>
-
-                            {{-- File --}}
-                            <div class="col-12 col-md-5">
-                                <label class="form-label fw-medium" style="font-size:.85rem">File Excel (.xlsx)</label>
-                                <input type="file" name="file" class="form-control form-control-file-custom"
-                                    accept=".xlsx,.xls,.csv" style="border-radius:.6rem;font-size:.875rem">
-                            </div>
-
-                            <div class="col-12 col-md-3">
-                                <div class="d-flex gap-2">
-
-                                    <button type="submit"
-                                        class="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-1"
-                                        style="border-radius:.6rem;font-size:.875rem;font-weight:500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path
-                                                d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-                                        </svg>
-                                        Upload
-                                    </button>
-
-                                    <a href="{{ asset('template/Template Stok.xlsx') }}"
-                                        class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-1"
-                                        style="border-radius:.6rem;font-size:.875rem">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path
-                                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                                        </svg>
-                                        Template
-                                    </a>
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                        {{-- Validation errors --}}
-                        @if ($errors->any())
-                            <div class="alert alert-danger d-flex align-items-start gap-2 mt-3 mb-0 py-2"
-                                style="border-radius:.6rem;font-size:.85rem">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
-                                    fill="currentColor" class="flex-shrink-0 mt-1" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                    <div class="col-12 col-md-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit"
+                                class="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem;font-weight:500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
                                 </svg>
-                                <ul class="mb-0 ps-2">
-                                    @foreach ($errors->all() as $e)
-                                        <li>{{ $e }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                                Upload
+                            </button>
 
-                    </form>
+                            <a href="{{ asset('template/Template Stok.xlsx') }}"
+                                class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                                </svg>
+                                Template
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                {{-- Validation errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger d-flex align-items-start gap-2 mt-3 mb-0 py-2"
+                        style="border-radius:.6rem;font-size:.85rem">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                            fill="currentColor" class="flex-shrink-0 mt-1" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                        </svg>
+                        <ul class="mb-0 ps-2">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </form>
+        </div>
+    </div>
+@endif
 
             {{-- ══════════════════════════════════
      📦 SECTION: DATA TERSIMPAN STOK
@@ -237,7 +226,7 @@
             <div class="col-12 col-md-5">
                 <label class="form-label fw-medium" style="font-size:.85rem">Snapshot</label>
                 <select id="filterSnapshot" class="form-select" style="border-radius:.6rem;font-size:.875rem">
-                    <option value="">-- Pilih Snapshot --</option>
+                    <option value="">Pilih Snapshot</option>
                     @foreach ($datasetStok as $snap)
                         <option value="{{ $snap }}">{{ $snap }}</option>
                     @endforeach
@@ -407,26 +396,30 @@
 
                     </div>
                 </div>
-            @else
-                {{-- Empty state --}}
-                <div class="section-card">
-                    <div class="card-topbar bg-success"></div>
-                    <div class="p-5 text-center">
-                        <div class="empty-state-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                fill="var(--accent)" viewBox="0 0 16 16">
-                                <path
-                                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
-                            </svg>
-                        </div>
-                        <p class="fw-medium text-dark mb-1" style="font-size:.95rem">Belum Ada Preview</p>
-                        <p class="text-muted mb-0" style="font-size:.84rem">
-                            Upload file Excel untuk melihat preview data stok di sini.
-                        </p>
-                    </div>
-                </div>
-
-            @endif
+           @else
+    {{-- 🔥 Tambahkan ID di sini --}}
+    <div class="section-card mb-4" id="emptyStateCard">
+        <div class="card-topbar bg-success"></div>
+        <div class="p-5 text-center">
+            <div class="empty-state-icon" style="background:#f1f5f9">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                    fill="#64748b" viewBox="0 0 16 16">
+                    <path
+                        d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                </svg>
+            </div>
+            <p class="fw-medium text-dark mb-1" style="font-size:.95rem">Belum Ada Data yang Ditampilkan</p>
+            <p class="text-muted mb-0" style="font-size:.84rem">
+                {{-- 🔒 Teks menyesuaikan Role --}}
+                @if(auth()->user()->role !== 'user')
+                    Upload file Excel untuk melihat preview, atau pilih snapshot pada Data Tersimpan.
+                @else
+                    Silakan pilih snapshot pada kolom Data Tersimpan di atas untuk melihat data stok.
+                @endif
+            </p>
+        </div>
+    </div>
+@endif
 
         </div>{{-- /container --}}
     </div>
@@ -441,6 +434,9 @@
     const empty       = document.getElementById('stokEmpty');
     const tbody       = document.getElementById('stokBody');
     const info        = document.getElementById('stokInfo');
+    
+    // 🔥 TANGKAP ELEMEN EMPTY STATE UTAMA
+    const mainEmptyStateCard = document.getElementById('emptyStateCard');
 
     selSnapshot.addEventListener('change', function () {
         btnLoad.disabled = !this.value;
@@ -476,6 +472,9 @@
                 info.textContent = `${data.length} motor ditemukan`;
                 wrapper.style.display = 'block';
                 empty.textContent = '';
+                
+                // 🔥 MANTRA PENGHILANG EMPTY STATE UTAMA
+                if (mainEmptyStateCard) mainEmptyStateCard.style.display = 'none';
             })
             .catch(() => {
                 empty.textContent = 'Gagal memuat data. Coba lagi.';
@@ -489,6 +488,9 @@
         tbody.innerHTML = '';
         info.textContent = '';
         empty.textContent = 'Pilih snapshot untuk menampilkan data stok.';
+        
+        // 🔥 MANTRA PEMANGGIL KEMBALI EMPTY STATE UTAMA
+        if (mainEmptyStateCard) mainEmptyStateCard.style.display = 'block';
     });
 })();
 </script>

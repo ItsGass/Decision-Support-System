@@ -13,7 +13,8 @@ class PenjualanAnalisis extends Model
         'motor_id',
         'jumlah',
         'percent',
-        'dataset_name'
+        'dataset_name',
+        'user_id'
     ];
 
     public function motor()

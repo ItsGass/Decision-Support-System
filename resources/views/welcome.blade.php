@@ -331,9 +331,8 @@
             Intelligent Hybrid Decision Support System
         </span>
         <div class="nav-links">
-            <a href="{{ route('login') }}" class="btn-ghost">Log in</a>
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="btn-dark">Register</a>
+            @if (Route::has('login'))
+                <a href="{{ route('login') }}" class="btn-dark">Log in</a>
             @endif
         </div>
     </nav>

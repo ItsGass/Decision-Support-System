@@ -12,7 +12,8 @@ class TrendAnalisis extends Model
         'motor_id',
         'periode',
         'skor_trend',
-        'alasan_ai'
+        'alasan_ai',
+        'user_id'
     ];
 
     // relasi ke motor

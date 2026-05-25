@@ -12,7 +12,7 @@ class Motor extends Model
     protected $table = 'motor';
     
 
-    protected $fillable = ['nama', 'category'];
+    protected $fillable = ['nama', 'category', 'user_id'];
 
     public function stok()
     {

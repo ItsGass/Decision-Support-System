@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Support\Facades\Auth;
 
 class OpiniController extends Controller
 {
@@ -215,7 +216,8 @@ class OpiniController extends Controller
                         'tanggal'      => $item['tanggal'],
                         'dataset_name' => $dataset ?? 'default',
                         'sentiment'    => $sentiment,
-                        'score'        => $score
+                        'score'        => $score,
+                        'user_id' => Auth::id(),
                     ]);
 
                     $item['ai'] = $sentiment;

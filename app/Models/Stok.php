@@ -12,7 +12,8 @@ class Stok extends Model
     protected $fillable = [
         'motor_id',
         'stok_sisa',
-        'snapshot_name'
+        'snapshot_name',
+        'user_id'
     ];
 
     protected $casts = [

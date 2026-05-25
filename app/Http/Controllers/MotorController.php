@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Motor;
+use Illuminate\Support\Facades\Auth;
 
 class MotorController extends Controller
 {
@@ -58,7 +59,8 @@ class MotorController extends Controller
         ]);
 
         Motor::create([
-            'nama' => $request->nama
+            'nama' => $request->nama,
+            'user_id' => Auth::id()
         ]);
 
         return redirect()->route('motor.index')
@@ -75,7 +77,8 @@ class MotorController extends Controller
         $motor = Motor::findOrFail($id);
 
         $motor->update([
-            'nama' => $request->nama
+            'nama' => $request->nama,
+            'user_id' => Auth::id()
         ]);
 
         return redirect()->route('motor.index')

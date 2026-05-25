@@ -91,13 +91,7 @@
 
                 </form>
 
-                <!-- REGISTER -->
-                <p class="text-sm text-gray-500 mt-6 text-center">
-                    Belum punya akun?
-                    <a href="{{ route('register') }}" class="text-black font-medium hover:underline">
-                        Register
-                    </a>
-                </p>
+                
 
             </div>
 

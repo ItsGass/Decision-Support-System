@@ -206,115 +206,110 @@
         <div class="container-xl px-0">
 
             {{-- ── PAGE HEADER ── --}}
-            <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
-                <div>
-                    <h1 class="fw-semibold text-dark mb-1" style="font-size:1.6rem;letter-spacing:-.02em">
-                        Data Opini
-                    </h1>
-                    <p class="text-muted mb-0" style="font-size:.9rem">
-                        Upload dan kelola opini pelanggan
-                    </p>
-                </div>
+<div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+        <h1 class="fw-semibold text-dark mb-1" style="font-size:1.6rem;letter-spacing:-.02em">
+            Data Opini
+        </h1>
+        <p class="text-muted mb-0" style="font-size:.9rem">
+            {{ auth()->user()->role !== 'user' ? 'Upload dan kelola opini pelanggan' : 'Lihat daftar opini pelanggan' }}
+        </p>
+    </div>
+</div>
 
+{{-- ══════════════════════════════════
+     🔵  SECTION: UPLOAD (Hanya Muncul Jika Bukan 'user')
+     ══════════════════════════════════ --}}
+@if(auth()->user()->role !== 'user')
+    <div class="section-card mb-4">
+        <div class="card-topbar bg-primary"></div>
+
+        <div class="p-4">
+            {{-- Header row --}}
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <span class="section-label bg-primary bg-opacity-10 text-primary">
+                    Upload
+                </span>
+                <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">
+                    Data Opini
+                </h2>
             </div>
 
-            {{-- ══════════════════════════════════
-             🔵  SECTION: UPLOAD
-        ══════════════════════════════════ --}}
-            <div class="section-card mb-4">
-                <div class="card-topbar bg-primary"></div>
+            <form action="{{ route('opini.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-                <div class="p-4">
+                <div class="row g-3 align-items-end">
 
-                    {{-- Header row --}}
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <span class="section-label bg-primary bg-opacity-10 text-primary">
-                            Upload
-                        </span>
-                        <h2 class="mb-0 fw-semibold" style="font-size:1rem;color:#1e2433">
-                            Data Opini
-                        </h2>
+                    {{-- Nama Dataset --}}
+                    <div class="col-12 col-md-4">
+                        <label class="form-label fw-medium" style="font-size:.85rem">
+                            Nama Dataset
+                        </label>
+                        <input type="text" name="dataset_name" class="form-control"
+                            value="{{ old('dataset_name', session('dataset_name')) }}"
+                            placeholder="Contoh: P1 Opini" style="border-radius:.6rem;font-size:.875rem">
                     </div>
 
-                    <form action="{{ route('opini.upload') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                    {{-- File --}}
+                    <div class="col-12 col-md-5">
+                        <label class="form-label fw-medium" style="font-size:.85rem">
+                            File Excel (.xlsx)
+                        </label>
+                        <input type="file" name="file" class="form-control form-control-file-custom"
+                            accept=".xlsx,.xls,.csv" style="border-radius:.6rem;font-size:.875rem">
+                    </div>
 
-                        <div class="row g-3 align-items-end">
+                    {{-- Actions --}}
+                    <div class="col-12 col-md-3">
+                        <div class="d-flex gap-2">
 
-                            {{-- Nama Dataset --}}
-                            <div class="col-12 col-md-4">
-                                <label class="form-label fw-medium" style="font-size:.85rem">
-                                    Nama Dataset
-                                </label>
-                                <input type="text" name="dataset_name" class="form-control"
-                                    value="{{ old('dataset_name', session('dataset_name')) }}"
-                                    placeholder="Contoh: P1 Opini" style="border-radius:.6rem;font-size:.875rem">
-                            </div>
-
-                            {{-- File --}}
-                            <div class="col-12 col-md-5">
-                                <label class="form-label fw-medium" style="font-size:.85rem">
-                                    File Excel (.xlsx)
-                                </label>
-                                <input type="file" name="file" class="form-control form-control-file-custom"
-                                    accept=".xlsx,.xls,.csv" style="border-radius:.6rem;font-size:.875rem">
-                            </div>
-
-                            {{-- Actions --}}
-                            <div class="col-12 col-md-3">
-                                <div class="d-flex gap-2">
-
-                                    <button type="submit"
-                                        class="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-1"
-                                        style="border-radius:.6rem;font-size:.875rem;font-weight:500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path
-                                                d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-                                        </svg>
-                                        Upload
-                                    </button>
-
-                                    <a href="{{ asset('template/Template Stok.xlsx') }}"
-                                        class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-1"
-                                        style="border-radius:.6rem;font-size:.875rem">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            fill="currentColor" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path
-                                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                                        </svg>
-                                        Template
-                                    </a>
-
-                                </div>
-                            </div>
-
-                        </div>{{-- /row --}}
-
-                        {{-- Validation errors --}}
-                        @if ($errors->any())
-                            <div class="alert alert-danger d-flex align-items-start gap-2 mt-3 mb-0 py-2"
-                                style="border-radius:.6rem;font-size:.85rem">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    fill="currentColor" class="flex-shrink-0 mt-1" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                            <button type="submit"
+                                class="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem;font-weight:500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
                                 </svg>
-                                <ul class="mb-0 ps-2">
-                                    @foreach ($errors->all() as $e)
-                                        <li>{{ $e }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                                Upload
+                            </button>
 
-                    </form>
-                </div>
-            </div>
+                            <a href="{{ asset('template/Template Stok.xlsx') }}"
+                                class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-1"
+                                style="border-radius:.6rem;font-size:.875rem">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                                </svg>
+                                Template
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>{{-- /row --}}
+
+                {{-- Validation errors --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger d-flex align-items-start gap-2 mt-3 mb-0 py-2"
+                        style="border-radius:.6rem;font-size:.85rem">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            fill="currentColor" class="flex-shrink-0 mt-1" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                        </svg>
+                        <ul class="mb-0 ps-2">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+            </form>
+        </div>
+    </div>
+@endif
 
             {{-- ══════════════════════════════════
      📦 SECTION: DATA TERSIMPAN OPINI
@@ -333,7 +328,7 @@
                         <div class="col-12 col-md-5">
                             <label class="form-label fw-medium" style="font-size:.85rem">Dataset</label>
                             <select id="filterOpini" class="form-select" style="border-radius:.6rem;font-size:.875rem">
-                                <option value="">-- Pilih Dataset --</option>
+                                <option value="">Pilih Dataset</option>
                                 @foreach ($datasetOpini as $d)
                                     <option value="{{ $d }}">{{ $d }}</option>
                                 @endforeach
@@ -584,24 +579,32 @@
                     </div>
                 </div>
             @else
-                <div class="section-card">
-                    <div class="card-topbar bg-success"></div>
-                    <div class="p-5 text-center">
-                        <div class="empty-state-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                fill="var(--accent)" viewBox="0 0 16 16">
-                                <path
-                                    d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 5.5zM8.5 6.5a.5.5 0 0 0-1 0V9H5a.5.5 0 0 0 0 1h2.5v2.5a.5.5 0 0 0 1 0V10H11a.5.5 0 0 0 0-1H8.5z" />
-                            </svg>
-                        </div>
-                        <p class="fw-medium text-dark mb-1" style="font-size:.95rem">Belum Ada Preview</p>
-                        <p class="text-muted mb-0" style="font-size:.84rem">
-                            Upload file Excel untuk melihat preview data opini di sini.
-                        </p>
-                    </div>
-                </div>
-
-            @endif
+    {{-- 🔥 Tambahkan ID di sini --}}
+    <div class="section-card" id="emptyStateCard">
+        <div class="card-topbar bg-success"></div>
+        <div class="p-5 text-center">
+            <div class="empty-state-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                    fill="var(--accent)" viewBox="0 0 16 16">
+                    <path
+                        d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 5.5zM8.5 6.5a.5.5 0 0 0-1 0V9H5a.5.5 0 0 0 0 1h2.5v2.5a.5.5 0 0 0 1 0V10H11a.5.5 0 0 0 0-1H8.5z" />
+                </svg>
+            </div>
+            
+            {{-- Ubah judul biar lebih general --}}
+            <p class="fw-medium text-dark mb-1" style="font-size:.95rem">Belum Ada Data yang Ditampilkan</p>
+            
+            <p class="text-muted mb-0" style="font-size:.84rem">
+                {{-- 🔒 Teks menyesuaikan Role --}}
+                @if(auth()->user()->role !== 'user')
+                    Upload file Excel untuk melihat preview, atau pilih dataset pada Data Tersimpan.
+                @else
+                    Silakan pilih dataset pada kolom Data Tersimpan di atas untuk melihat opini.
+                @endif
+            </p>
+        </div>
+    </div>
+@endif
 
         </div>{{-- /container --}}
     </div>
@@ -651,170 +654,178 @@
      SCRIPTS
 ══════════════════════════════════════════════════ --}}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
 
-            /* ── Loading on save ── */
-            const formSimpan = document.getElementById('formSimpan');
-            if (formSimpan) {
-                formSimpan.addEventListener('submit', function() {
-                    const el = document.getElementById('loadingPopup');
-                    if (el) el.classList.remove('d-none');
-                });
-            }
-
-            /* ── Popup helpers ── */
-            function showPopup(title, message, type) {
-                const iconMap = {
-                    success: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#16a34a" viewBox="0 0 16 16">
-                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-              </svg>`,
-                    error: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#dc2626" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.553.553 0 0 1-1.1 0z"/>
-              </svg>`,
-                };
-                const bgMap = {
-                    success: 'var(--success-soft)',
-                    error: 'var(--danger-soft)'
-                };
-                document.getElementById('popupIconWrap').innerHTML = iconMap[type] || iconMap.error;
-                document.getElementById('popupIconWrap').style.background = bgMap[type] || bgMap.error;
-                document.getElementById('popupTitle').innerText = title;
-                document.getElementById('popupMessage').innerText = message;
-                document.getElementById('resultPopup').classList.remove('d-none');
-            }
-
-            window.closePopup = function() {
-                document.getElementById('resultPopup').classList.add('d-none');
-            };
-
-            @if (session('success') && session('saved_opini'))
-                showPopup("Proses Berhasil", "Data opini berhasil dianalisis dan disimpan dengan sukses.",
-                    "success");
-            @endif
-
-            @if (session('error'))
-                const errorCode = "{{ session('error') }}";
-                const messages = {
-                    "503": "Layanan AI sedang mengalami lonjakan permintaan. Silakan coba beberapa saat lagi.",
-                    "429": "Batas penggunaan API telah tercapai. Silakan tunggu sebelum mencoba kembali.",
-                    "401": "Autentikasi API gagal. Periksa konfigurasi API Key Anda.",
-                    "403": "Akses ditolak oleh layanan AI.",
-                    "404": "Model AI tidak ditemukan.",
-                    "500": "Terjadi kesalahan pada server AI.",
-                };
-                const msg = Object.entries(messages).find(([k]) => errorCode.includes(k));
-                showPopup("Terjadi Kesalahan", msg ? msg[1] : errorCode, "error");
-            @endif
-
-            /* ── Data Tersimpan ── */
-            const sel = document.getElementById('filterOpini');
-            const btnLoad = document.getElementById('btnLoadOpini');
-            const btnReset = document.getElementById('btnResetOpini');
-            const wrapper = document.getElementById('opiniWrapper');
-            const empty = document.getElementById('opiniEmpty');
-            const tbody = document.getElementById('opiniBody');
-            const info = document.getElementById('opiniInfo');
-
-            // Format tanggal ISO → dd/mm/yyyy
-            const fmtDate = (raw) => {
-                if (!raw) return '-';
-                const d = new Date(raw);
-                if (isNaN(d)) return raw;
-                return d.toLocaleDateString('id-ID', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                });
-            };
-
-            const sentimentBadge = (s) => {
-                const map = {
-                    positif: ['#ecfdf5', '#059669'],
-                    negatif: ['#fef2f2', '#dc2626'],
-                    netral: ['#f8fafc', '#64748b'],
-                };
-                const key = s?.toLowerCase();
-                const [bg, color] = map[key] ?? ['#f8fafc', '#64748b'];
-                return `<span class="pct-badge" style="background:${bg};color:${color};font-size:.75rem">${s ?? '-'}</span>`;
-            };
-
-            const scoreColor = (score) => {
-                if (score > 0) return '#059669';
-                if (score < 0) return '#dc2626';
-                return '#64748b';
-            };
-
-            sel.addEventListener('change', function() {
-                btnLoad.disabled = !this.value;
-                wrapper.style.display = 'none';
-                tbody.innerHTML = '';
-                info.textContent = '';
-                empty.textContent = 'Pilih dataset untuk menampilkan data opini.';
+        /* ── Loading on save ── */
+        const formSimpan = document.getElementById('formSimpan');
+        if (formSimpan) {
+            formSimpan.addEventListener('submit', function() {
+                const el = document.getElementById('loadingPopup');
+                if (el) el.classList.remove('d-none');
             });
+        }
 
-            btnLoad.addEventListener('click', function() {
-                const dataset = sel.value;
-                if (!dataset) return;
+        /* ── Popup helpers ── */
+        function showPopup(title, message, type) {
+            const iconMap = {
+                success: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#16a34a" viewBox="0 0 16 16">
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+          </svg>`,
+                error: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#dc2626" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.553.553 0 0 1-1.1 0z"/>
+          </svg>`,
+            };
+            const bgMap = {
+                success: 'var(--success-soft)',
+                error: 'var(--danger-soft)'
+            };
+            document.getElementById('popupIconWrap').innerHTML = iconMap[type] || iconMap.error;
+            document.getElementById('popupIconWrap').style.background = bgMap[type] || bgMap.error;
+            document.getElementById('popupTitle').innerText = title;
+            document.getElementById('popupMessage').innerText = message;
+            document.getElementById('resultPopup').classList.remove('d-none');
+        }
 
-                empty.textContent = 'Memuat data...';
-                wrapper.style.display = 'none';
+        window.closePopup = function() {
+            document.getElementById('resultPopup').classList.add('d-none');
+        };
 
-                fetch(`{{ route('opini.loadData') }}?dataset_name=${encodeURIComponent(dataset)}`)
-                    .then(r => r.json())
-                    .then(data => {
-                        if (!data.length) {
-                            empty.textContent = 'Data kosong.';
-                            return;
-                        }
+        @if (session('success') && session('saved_opini'))
+            showPopup("Proses Berhasil", "Data opini berhasil dianalisis dan disimpan dengan sukses.",
+                "success");
+        @endif
 
-                        tbody.innerHTML = data.map((row, i) => `
-    <tr style="cursor:pointer" onclick="toggleOpini(${i})">
-        <td class="text-muted" style="font-size:.82rem">${i + 1}</td>
-        <td><span class="badge bg-primary bg-opacity-10 text-primary" style="font-size:.75rem;border-radius:2rem">${row.motor?.nama ?? '-'}</span></td>
-        <td style="font-size:.875rem">${row.nama ?? '-'}</td>
-        <td style="font-size:.82rem;white-space:nowrap;color:#64748b">${fmtDate(row.tanggal)}</td>
-        <td style="max-width:260px">
-    <div style="font-size:.82rem;color:#475569;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal">
-        ${row.isi ?? '-'}
-    </div>
-</td>
-        <td class="text-center">${sentimentBadge(row.sentiment)}</td>
-        <td class="text-center fw-semibold" style="color:${scoreColor(row.score)}">${row.score ?? '-'}</td>
-    </tr>
-    <tr id="expand-${i}" style="display:none;background:#f8fafc">
-        <td colspan="7" style="padding:12px 16px;font-size:.85rem;color:#334155;line-height:1.7;border-top:none">
-            <span style="font-size:.75rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px">Isi Opini Lengkap</span>
-            ${row.isi ?? '-'}
-        </td>
-    </tr>
-`).join('');
+        @if (session('error'))
+            const errorCode = "{{ session('error') }}";
+            const messages = {
+                "503": "Layanan AI sedang mengalami lonjakan permintaan. Silakan coba beberapa saat lagi.",
+                "429": "Batas penggunaan API telah tercapai. Silakan tunggu sebelum mencoba kembali.",
+                "401": "Autentikasi API gagal. Periksa konfigurasi API Key Anda.",
+                "403": "Akses ditolak oleh layanan AI.",
+                "404": "Model AI tidak ditemukan.",
+                "500": "Terjadi kesalahan pada server AI.",
+            };
+            const msg = Object.entries(messages).find(([k]) => errorCode.includes(k));
+            showPopup("Terjadi Kesalahan", msg ? msg[1] : errorCode, "error");
+        @endif
 
-                        // tambah ini juga di dalam script
-                        window.toggleOpini = function(i) {
-                            const row = document.getElementById(`expand-${i}`);
-                            row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
-                        };
+        /* ── Data Tersimpan ── */
+        const sel = document.getElementById('filterOpini');
+        const btnLoad = document.getElementById('btnLoadOpini');
+        const btnReset = document.getElementById('btnResetOpini');
+        const wrapper = document.getElementById('opiniWrapper');
+        const empty = document.getElementById('opiniEmpty');
+        const tbody = document.getElementById('opiniBody');
+        const info = document.getElementById('opiniInfo');
 
-                        info.textContent = `${data.length} opini ditemukan`;
-                        wrapper.style.display = 'block';
-                        empty.textContent = '';
-                    })
-                    .catch(() => {
-                        empty.textContent = 'Gagal memuat data. Coba lagi.';
-                    });
+        // 🔥 TANGKAP ELEMEN EMPTY STATE UTAMA YG ADA DI BAWAH HALAMAN
+        const mainEmptyStateCard = document.getElementById('emptyStateCard');
+
+        // Format tanggal ISO → dd/mm/yyyy
+        const fmtDate = (raw) => {
+            if (!raw) return '-';
+            const d = new Date(raw);
+            if (isNaN(d)) return raw;
+            return d.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
             });
+        };
 
-            btnReset.addEventListener('click', function() {
-                sel.value = '';
-                btnLoad.disabled = true;
-                wrapper.style.display = 'none';
-                tbody.innerHTML = '';
-                info.textContent = '';
-                empty.textContent = 'Pilih dataset untuk menampilkan data opini.';
-            });
+        const sentimentBadge = (s) => {
+            const map = {
+                positif: ['#ecfdf5', '#059669'],
+                negatif: ['#fef2f2', '#dc2626'],
+                netral: ['#f8fafc', '#64748b'],
+            };
+            const key = s?.toLowerCase();
+            const [bg, color] = map[key] ?? ['#f8fafc', '#64748b'];
+            return `<span class="pct-badge" style="background:${bg};color:${color};font-size:.75rem">${s ?? '-'}</span>`;
+        };
 
+        const scoreColor = (score) => {
+            if (score > 0) return '#059669';
+            if (score < 0) return '#dc2626';
+            return '#64748b';
+        };
+
+        sel.addEventListener('change', function() {
+            btnLoad.disabled = !this.value;
+            wrapper.style.display = 'none';
+            tbody.innerHTML = '';
+            info.textContent = '';
+            empty.textContent = 'Pilih dataset untuk menampilkan data opini.';
         });
-    </script>
+
+        btnLoad.addEventListener('click', function() {
+            const dataset = sel.value;
+            if (!dataset) return;
+
+            empty.textContent = 'Memuat data...';
+            wrapper.style.display = 'none';
+
+            fetch(`{{ route('opini.loadData') }}?dataset_name=${encodeURIComponent(dataset)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.length) {
+                        empty.textContent = 'Data kosong.';
+                        return;
+                    }
+
+                    tbody.innerHTML = data.map((row, i) => `
+                        <tr style="cursor:pointer" onclick="toggleOpini(${i})">
+                            <td class="text-muted" style="font-size:.82rem">${i + 1}</td>
+                            <td><span class="badge bg-primary bg-opacity-10 text-primary" style="font-size:.75rem;border-radius:2rem">${row.motor?.nama ?? '-'}</span></td>
+                            <td style="font-size:.875rem">${row.nama ?? '-'}</td>
+                            <td style="font-size:.82rem;white-space:nowrap;color:#64748b">${fmtDate(row.tanggal)}</td>
+                            <td style="max-width:260px">
+                                <div style="font-size:.82rem;color:#475569;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal">
+                                    ${row.isi ?? '-'}
+                                </div>
+                            </td>
+                            <td class="text-center">${sentimentBadge(row.sentiment)}</td>
+                            <td class="text-center fw-semibold" style="color:${scoreColor(row.score)}">${row.score ?? '-'}</td>
+                        </tr>
+                        <tr id="expand-${i}" style="display:none;background:#f8fafc">
+                            <td colspan="7" style="padding:12px 16px;font-size:.85rem;color:#334155;line-height:1.7;border-top:none">
+                                <span style="font-size:.75rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px">Isi Opini Lengkap</span>
+                                ${row.isi ?? '-'}
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    window.toggleOpini = function(i) {
+                        const row = document.getElementById(`expand-${i}`);
+                        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+                    };
+
+                    info.textContent = `${data.length} opini ditemukan`;
+                    wrapper.style.display = 'block';
+                    empty.textContent = '';
+                    
+                    // 🔥 MANTRA PENGHILANG EMPTY STATE UTAMA
+                    if (mainEmptyStateCard) mainEmptyStateCard.style.display = 'none';
+                })
+                .catch(() => {
+                    empty.textContent = 'Gagal memuat data. Coba lagi.';
+                });
+        });
+
+        btnReset.addEventListener('click', function() {
+            sel.value = '';
+            btnLoad.disabled = true;
+            wrapper.style.display = 'none';
+            tbody.innerHTML = '';
+            info.textContent = '';
+            empty.textContent = 'Pilih dataset untuk menampilkan data opini.';
+            
+            // 🔥 MANTRA PEMANGGIL KEMBALI EMPTY STATE UTAMA
+            if (mainEmptyStateCard) mainEmptyStateCard.style.display = 'block';
+        });
+
+    });
+</script>
 
 </x-app-layout>

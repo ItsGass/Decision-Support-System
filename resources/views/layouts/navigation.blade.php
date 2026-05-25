@@ -7,19 +7,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
 
-            <!-- LEFT: Logo -->
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('dashboard') }}" class="font-bold tracking-wide flex flex-col justify-center">
-                    <!-- Tampil di HP/Tablet: Cuma IHDSS (1 baris, besar) -->
                     <span class="block lg:hidden text-xl md:text-2xl text-blue-600">
-                        IHDSS
+                        DSS
                     </span>
-
-                    <!-- Tampil di Laptop/Desktop: Teks lengkap (2 baris, bertingkat) -->
                     <span class="hidden lg:flex flex-col">
                         <span
                             class="text-2xl font-bold text-blue-600 leading-tight uppercase font-['Rajdhani'] tracking-widest">
-                            Intelligent Hybrid
+                            DSS
                         </span>
                         <span class="text-xs font-semibold text-gray-500 tracking-wider">
                             Decision Support System
@@ -28,45 +24,32 @@
                 </a>
             </div>
 
-            <!-- CENTER: Menu (Desktop Saja) -->
-            <!-- Pindah pakai lg:flex dan flex-1 justify-center biar gak tabrakan (Gak pakai absolute lagi) -->
             <div class="hidden lg:flex flex-1 justify-center gap-8 text-sm font-semibold">
                 <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-blue-600 transition">Dashboard</a>
-                <a href="{{ route('penjualan') }}" class="text-gray-600 hover:text-blue-600 transition">Data
+                <a href="{{ route('penjualan.index') }}" class="text-gray-600 hover:text-blue-600 transition">Data
                     Penjualan</a>
                 <a href="{{ route('stok.index') }}" class="text-gray-600 hover:text-blue-600 transition">Stok</a>
-                <a href="{{ route('opini') }}" class="text-gray-600 hover:text-blue-600 transition">Opini</a>
+                <a href="{{ route('opini.index') }}" class="text-gray-600 hover:text-blue-600 transition">Opini</a>
                 <a href="{{ route('trend.index') }}" class="text-gray-600 hover:text-blue-600 transition">Trend</a>
 
-                <a href="{{ route('prediction.index') }}"
-                    class="text-gray-600 hover:text-blue-600 transition">Priority Stock</a>
-                <a href="{{ route('motor.index') }}" class="text-gray-600 hover:text-blue-600 transition">Motor</a>
-                <a href="{{ route('settings.prediction') }}" class="text-gray-600 hover:text-blue-600 transition">Settings</a>
+                @if (Auth::check() && (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin'))
+                    <a href="{{ route('prediction.index') }}"
+                        class="text-gray-600 hover:text-blue-600 transition">Pengadaan Stok</a>
+                    <a href="{{ route('motor.index') }}" class="text-gray-600 hover:text-blue-600 transition">Motor</a>
+                @endif
             </div>
 
-            <!-- RIGHT: Buttons & Profile -->
-            <div class="flex items-center gap-2 sm:gap-4">
+            <div class="flex items-center gap-2 sm:gap-3">
 
-                <!-- 🔥 CLEAR BUTTON (Teks disembunyikan di HP, sisa icon/padding kecil) -->
-                <button onclick="openClearModal()"
-                    class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                        viewBox="0 0 16 16" class="sm:hidden block">
-                        <path
-                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                        <path
-                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                    </svg>
-                    <span class="hidden sm:block">Manage Data</span>
-                </button>
-
-                <!-- USER DROPDOWN (Bawaan Laravel) -->
-                <div class="hidden sm:flex items-center">
+                <div class="hidden sm:flex items-center ms-2">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button
                                 class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition">
-                                <span>{{ Auth::user()->name }}</span>
+                                <div class="flex flex-col items-end">
+                                    <span class="font-bold">{{ Auth::user()->name }}</span>
+                                    <span class="text-[10px] uppercase text-blue-500">{{ Auth::user()->role }}</span>
+                                </div>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
@@ -75,6 +58,19 @@
                         </x-slot>
                         <x-slot name="content">
                             <x-dropdown-link :href="route('profile.edit')">Profile</x-dropdown-link>
+
+                            {{-- Manage User & Manage Data masuk sini --}}
+                            @if (Auth::check() && (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin'))
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <x-dropdown-link :href="route('users.index')">Manage User</x-dropdown-link>
+                                <button onclick="openClearModal()"
+                                    class="block w-full px-4 py-2 text-start text-sm font-semibold text-gray-800 hover:bg-gray-100 hover:text-blue-600 rounded-md mx-2 transition duration-150 ease-in-out">
+                                    Manage Data
+                                </button>
+                                <x-dropdown-link :href="route('settings.prediction')">Settings</x-dropdown-link>
+                            @endif
+
+                            <div class="border-t border-gray-100 my-1"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <x-dropdown-link :href="route('logout')"
@@ -86,7 +82,6 @@
                     </x-dropdown>
                 </div>
 
-                <!-- 🔥 HAMBURGER BUTTON (Tampil di HP/Tablet) -->
                 <button onclick="toggleMobileMenu()"
                     class="lg:hidden p-2 text-gray-600 hover:text-blue-600 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,34 +91,44 @@
                             stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-
             </div>
         </div>
     </div>
 
-    <!-- 🔥 MOBILE MENU PANEL (Tampil saat Hamburger di-klik) -->
-    <div id="mobileMenu" class="hidden lg:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg">
+    {{-- Mobile Menu --}}
+    <div id="mobileMenu" class="hidden lg:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg z-50">
         <div class="px-4 pt-2 pb-4 space-y-1">
             <a href="{{ route('dashboard') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Dashboard</a>
-            <a href="{{ route('penjualan') }}"
+            <a href="{{ route('penjualan.index') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Data
                 Penjualan</a>
             <a href="{{ route('stok.index') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Stok</a>
-            <a href="{{ route('opini') }}"
+            <a href="{{ route('opini.index') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Opini</a>
-           <a href="{{ route('trend.index') }}"
+            <a href="{{ route('trend.index') }}"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Trend</a>
+
+            @if (Auth::check() && (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin'))
+                <div class="border-t border-gray-100 my-2"></div>
                 <a href="{{ route('prediction.index') }}"
-                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Priority Stock</a>
-            <a href="{{ route('motor.index') }}"
-                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Motor</a>
-            <a href="{{ route('settings.prediction') }}"
-                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Settings</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Pengadaan Stok</a>
+                <a href="{{ route('motor.index') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Motor</a>
+                <a href="{{ route('settings.prediction') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Settings</a>
+                <a href="{{ route('users.index') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50">Manage
+                    User</a>
+                <button onclick="openClearModal()"
+                    class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">Manage
+                    Data</button>
+            @endif
 
             <div class="border-t border-gray-200 mt-4 pt-4 pb-2">
-                <div class="px-3 text-sm font-medium text-gray-500">Hi, {{ Auth::user()->name }}</div>
+                <div class="px-3 text-sm font-bold text-blue-600">Hi, {{ Auth::user()->name }}
+                    ({{ strtoupper(Auth::user()->role) }})</div>
                 <a href="{{ route('profile.edit') }}"
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 mt-1">Profile</a>
                 <form method="POST" action="{{ route('logout') }}">

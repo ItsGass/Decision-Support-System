@@ -18,7 +18,8 @@ class Opini extends Model
         'sentiment',
         'score',
         'sumber',
-        'analysis_name'
+        'analysis_name',
+        'user_id'
     ];
 
     // 🔥 OPTIONAL TAPI BAGUS (BIAR GAK ANEH)
