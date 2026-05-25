@@ -27,6 +27,11 @@ require __DIR__.'/auth.php';
 */
 Route::middleware(['auth'])->group(function () {
 
+    /* --- 👤 PROFILE ROUTES (Bawaan Breeze) --- */
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     /* --- 🟢 AKSES SEMUA ROLE (Superadmin, Admin, User) --- */
     /* Fitur: Hanya Lihat (Index) & Dashboard */
     Route::middleware('role:superadmin,admin,user')->group(function () {
@@ -84,7 +89,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/trend/clear', [TrendController::class, 'clear'])->name('trend.clear');
 
         // Prediksi Actions
+        Route::get('/prediction/preview', fn() => redirect()->route('prediction.index')); 
         Route::post('/prediction/preview', [PredictionController::class, 'preview'])->name('prediction.preview');
+        Route::get('/prediction/export', fn() => redirect()->route('prediction.index'));  
+
         Route::post('/prediction/export', [PredictionController::class, 'export'])->name('prediction.export');
 
         // Management Data (Clear All)
@@ -100,8 +108,5 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    /* --- 👤 PROFILE ROUTES (Bawaan Breeze) --- */
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
 });

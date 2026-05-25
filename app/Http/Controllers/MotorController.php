@@ -55,7 +55,8 @@ class MotorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255'
+            'nama' => 'required|string|max:255',
+            'category' => 'required|in:fast_moving,premium,slow_moving'
         ]);
 
         Motor::create([

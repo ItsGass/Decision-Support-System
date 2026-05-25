@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $guarded = []; // Buka semua gerbang agar bisa diisi
+    // Hapus $guarded, ganti jadi ini:
+    protected $fillable = ['key', 'value', 'user_id']; 
 }

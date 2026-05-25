@@ -125,14 +125,23 @@ $weightMap = [
     }
 
     private function calcStockScore(int $stok, int $sales): float
-    {
-        if ($stok == 0) return 1.0;
-        $ratio = $stok / $sales;
-        if ($ratio <= 0.5) return 0.8;
-        if ($ratio <= 1.0) return 0.5;
-        if ($ratio <= 2.0) return 0.2;
-        return 0.0;
-    }
+{
+    // 1. Jika stok habis, prioritas restock paling tinggi (Skor 1.0)
+    if ($stok == 0) return 1.0;
+    
+    // 🔥 2. OBAT BUG-002: Cegah Division by Zero!
+    // Jika tidak ada penjualan (0), prioritas restock paling rendah (Skor 0.0)
+    if ($sales == 0) return 0.0; 
+
+    // 3. Perhitungan rasio normal
+    $ratio = $stok / $sales;
+    
+    if ($ratio <= 0.5) return 0.8;
+    if ($ratio <= 1.0) return 0.5;
+    if ($ratio <= 2.0) return 0.2;
+    
+    return 0.0;
+}
 
     // =========================================================================
     // 3. PROPORSIONAL BASIC

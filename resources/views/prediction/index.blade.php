@@ -1086,16 +1086,20 @@
                 </form>
 
                 {{-- Hidden export form --}}
-                @if (isset($results) && $results->isNotEmpty())
-                    <form id="exportForm" method="POST" action="{{ route('prediction.export') }}"
-                        style="display:none">
-                        @csrf
-                        <input type="hidden" name="total_target" value="{{ $totalTarget }}">
-                        @foreach ($motorBaruIds ?? [] as $id)
-                            <input type="hidden" name="motor_baru[]" value="{{ $id }}">
-                        @endforeach
-                    </form>
-                @endif
+@if (isset($results) && $results->isNotEmpty())
+    <form id="exportForm" method="POST" action="{{ route('prediction.export') }}"
+        style="display:none">
+        @csrf
+        <input type="hidden" name="total_target" value="{{ $totalTarget }}">
+        <input type="hidden" name="periode_penjualan" value="{{ $periodePenjualan }}">
+        <input type="hidden" name="periode_stok"      value="{{ $periodeStok }}">
+        <input type="hidden" name="periode_opini"     value="{{ $periodeOpini }}">
+        <input type="hidden" name="periode_trend"     value="{{ $periodeTrend }}">
+        @foreach ($motorBaruIds ?? [] as $id)
+            <input type="hidden" name="motor_baru[]" value="{{ $id }}">
+        @endforeach
+    </form>
+@endif
             </div>{{-- /card --}}
 
             {{-- ============================================================

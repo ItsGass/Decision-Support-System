@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use App\DTOs\PredictionResult;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str; // 🔥 Wajib import ini
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -17,6 +16,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Facades\Auth;
+
 
 class PredictionExport implements
     FromCollection,
@@ -29,6 +30,23 @@ class PredictionExport implements
 {
     private int $totalTarget;
     private Collection $results;
+
+    // =========================================================================
+    // 🔥 MAP STATUS: dari properti PredictionResult
+    // =========================================================================
+    private const STATUS_LABEL_MAP = [
+        'danger' => 'Darurat / Overstock',
+        'review' => 'Warning / Perhatian',
+        'info'   => 'Info / Model Baru',
+        'safe'   => 'Aman / Normal',
+    ];
+
+    private const STATUS_STYLE_MAP = [
+        'Darurat / Overstock' => ['fontColor' => 'FFDC2626', 'fillColor' => 'FFFEF2F2'],
+        'Warning / Perhatian' => ['fontColor' => 'FFD97706', 'fillColor' => 'FFFFFBEB'],
+        'Info / Model Baru'   => ['fontColor' => 'FF2563EB', 'fillColor' => 'FFEFF6FF'],
+        'Aman / Normal'       => ['fontColor' => 'FF4B5563', 'fillColor' => null],
+    ];
 
     public function __construct(Collection $results, int $totalTarget)
     {
@@ -56,14 +74,11 @@ class PredictionExport implements
             'Skor Akhir',
             'Sisa Stok',
             'Motor Baru',
-            'Status', // 🔥 Header Baru
+            'Status',
             'Analisis Sistem Pakar',
         ];
     }
 
-    /**
-     * @param PredictionResult $row
-     */
     /**
      * @param PredictionResult $row
      */
@@ -72,46 +87,48 @@ class PredictionExport implements
         static $no = 0;
         $no++;
 
-        // 🔥 Ekstrak Status Berdasarkan Alasan
-        $alasan = strtolower($row->alasan ?? '');
+        $statusKey   = $row->status ?? 'safe';
+        $statusLabel = self::STATUS_LABEL_MAP[$statusKey] ?? 'Aman / Normal';
+
+        // 🔥 PERBAIKAN: Rapihkan baris baru untuk C1, C2 dst agar terbaca rapi di Excel
+        $alasan = $row->alasan ?? '';
+        // Ubah tag HTML break/list jadi baris baru (\n)
+        $alasan = str_ireplace(['<br>', '<br/>', '<br />', '<li>', '</li>'], "\n", $alasan);
+        $alasan = strip_tags($alasan);
         
-        if (Str::contains($alasan, ['darurat', 'overstock', 'loss sales'])) {
-            $status = 'Darurat / Overstock';
-        } elseif (Str::contains($alasan, ['premium', 'slow-moving kosong'])) {
-            $status = 'Warning / Perhatian';
-        } elseif (Str::contains($alasan, 'model baru')) {
-            $status = 'Info / Model Baru';
-        } else {
-            $status = 'Aman / Normal';
-        }
+        // Beri enter paksa sebelum kata C1, C2, C3 dst kalau belum ada enternya
+        $alasan = preg_replace('/(?<!\n)(C[1-5]\s*:)/i', "\n$1", $alasan);
+        
+        // Bersihkan spasi berlebih tanpa menghapus enter (\n)
+        $alasanBersih = preg_replace('/[ \t]+/', ' ', $alasan); 
+        $alasanBersih = preg_replace("/\n\s+/", "\n", $alasanBersih); 
+        $alasanBersih = trim(preg_replace("/\n+/", "\n", $alasanBersih));
 
         return [
             $no,
             $row->namaMotor,
-            // 🔥 SOLUSI: Pakai (string) atau strval() agar angka 0 tetap tercetak
             (string) $row->rekomendasiJumlah,
             $row->percent . '%',
             number_format($row->finalScore, 4),
-            // 🔥 SOLUSI: Pakai (string) di sini juga untuk stok
             (string) $row->stokSisa,
             $row->isNew ? 'Ya' : '-',
-            $status, 
-            $row->alasan, 
+            $statusLabel,
+            $alasanBersih,
         ];
     }
 
     public function columnWidths(): array
     {
         return [
-            'A' => 5,   // No
-            'B' => 20,  // Nama
-            'C' => 18,  // Rekomendasi
-            'D' => 15,  // % Penjualan
-            'E' => 12,  // Skor
-            'F' => 12,  // Stok Sisa
-            'G' => 12,  // Motor Baru
-            'H' => 22,  // Status (Lebar disesuaikan)
-            'I' => 50,  // Analisis (Lebar Fix agar bisa wrap text)
+            'A' => 5,
+            'B' => 20,
+            'C' => 18,
+            'D' => 15,
+            'E' => 12,
+            'F' => 12,
+            'G' => 12,
+            'H' => 22,
+            'I' => 60, // Lebar sedikit ditambah agar tulisan analisis lega
         ];
     }
 
@@ -126,7 +143,7 @@ class PredictionExport implements
                 ],
                 'fill' => [
                     'fillType'   => Fill::FILL_SOLID,
-                    'startColor' => ['argb' => 'FF1E3A8A'], 
+                    'startColor' => ['argb' => 'FF1E3A8A'],
                 ],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -140,100 +157,80 @@ class PredictionExport implements
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $sheet     = $event->sheet->getDelegate();
-                $lastRow   = $this->results->count() + 1;
-                $lastCol   = 'I'; // 🔥 Berubah jadi 'I' karena ada kolom Status
+                $sheet   = $event->sheet->getDelegate();
+                $lastRow = $this->results->count() + 1;
 
-                // 1. Terapkan Border ke semua tabel
-                $sheet->getStyle("A1:{$lastCol}{$lastRow}")
+                // 1. Border ke seluruh tabel
+                $sheet->getStyle("A1:I{$lastRow}")
                     ->getBorders()
                     ->getAllBorders()
                     ->setBorderStyle(Border::BORDER_THIN);
 
-                // 2. Alignment standar
-                $sheet->getStyle("A2:A{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $sheet->getStyle("C2:H{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                // 2. 🔥 ALIGNMENT (MIDDLE & CENTER)
+                // Jadikan seluruh baris Vertical Center (Middle Align)
+                $sheet->getStyle("A1:I{$lastRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 
-                // Wrap text untuk "Analisis"
+                // Jadikan kolom A sampai H rata tengah (Horizontal Center)
+                $sheet->getStyle("A2:H{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                // Khusus kolom I (Analisis) Wrap Text dan Rata Kiri biar list C1, C2 rapih
                 $sheet->getStyle("I2:I{$lastRow}")->getAlignment()
                     ->setWrapText(true)
-                    ->setVertical(Alignment::VERTICAL_CENTER);
+                    ->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-                // 3. 🔥 PEWARNAAN DINAMIS ALA DASHBOARD WEB
+                // 3. Pewarnaan Dinamis Status
                 for ($row = 2; $row <= $lastRow; $row++) {
                     $statusValue = $sheet->getCell("H{$row}")->getValue();
-                    
-                    $styleStatus = [];
-                    $styleTeks   = [];
+                    $styleConfig = self::STATUS_STYLE_MAP[$statusValue] ?? null;
 
-                    // Penentuan Warna berdasarkan value Kolom H
-                    if ($statusValue === 'Darurat / Overstock') {
-                        // Merah
-                        $styleStatus = [
-                            'font' => ['color' => ['argb' => 'FFDC2626'], 'bold' => true],
-                            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFFEF2F2']]
+                    if ($styleConfig) {
+                        $statusStyle = [
+                            'font' => ['color' => ['argb' => $styleConfig['fontColor']], 'bold' => true],
                         ];
-                        $styleTeks = ['font' => ['color' => ['argb' => 'FFDC2626'], 'bold' => true]];
-                    } elseif ($statusValue === 'Warning / Perhatian') {
-                        // Kuning/Amber
-                        $styleStatus = [
-                            'font' => ['color' => ['argb' => 'FFD97706'], 'bold' => true],
-                            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFFFFBEB']]
+                        $textStyle = [
+                            'font' => ['color' => ['argb' => $styleConfig['fontColor']]],
                         ];
-                        $styleTeks = ['font' => ['color' => ['argb' => 'FFD97706'], 'bold' => true]];
-                    } elseif ($statusValue === 'Info / Model Baru') {
-                        // Biru
-                        $styleStatus = [
-                            'font' => ['color' => ['argb' => 'FF2563EB'], 'bold' => true],
-                            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFEFF6FF']]
-                        ];
-                        $styleTeks = ['font' => ['color' => ['argb' => 'FF2563EB'], 'bold' => true]];
-                    } else {
-                        // Abu-abu (Normal)
-                        $styleStatus = ['font' => ['color' => ['argb' => 'FF4B5563'], 'bold' => true]];
-                        $styleTeks   = ['font' => ['color' => ['argb' => 'FF4B5563']]];
+
+                        if ($styleConfig['fillColor']) {
+                            $statusStyle['fill'] = [
+                                'fillType'   => Fill::FILL_SOLID,
+                                'startColor' => ['argb' => $styleConfig['fillColor']],
+                            ];
+                        }
+
+                        $sheet->getStyle("H{$row}")->applyFromArray($statusStyle);
+                        $sheet->getStyle("I{$row}")->applyFromArray($textStyle);
                     }
-
-                    // Terapkan warna ke cell Status (Kolom H) dan teks Analisis (Kolom I)
-                    $sheet->getStyle("H{$row}")->applyFromArray($styleStatus);
-                    $sheet->getStyle("I{$row}")->applyFromArray($styleTeks);
                 }
 
-                // Freeze header row
+                // 4. Freeze header row
                 $sheet->freezePane('A2');
 
-                // ... (kode di atasnya biarkan sama)
-
-                // Freeze header row
-                $sheet->freezePane('A2');
-
-                // ==========================================
-                // 🔥 FIX: META INFO (Lebih rapi, anti kepotong, WIB)
-                // ==========================================
+                // 5. 🔥 META INFO (Tambahan User Pembuat)
                 $metaRow = $lastRow + 3;
-                
-                // Judul
+
                 $sheet->setCellValue("A{$metaRow}", 'INFORMASI PREDIKSI');
-                $sheet->mergeCells("A{$metaRow}:C{$metaRow}"); // Merge A sampai C
+                $sheet->mergeCells("A{$metaRow}:C{$metaRow}");
                 $sheet->getStyle("A{$metaRow}")->getFont()->setBold(true)->setSize(12);
 
-                // Baris Target Unit
-                $sheet->setCellValue("A" . ($metaRow + 1), 'Total Target Unit');
-                $sheet->mergeCells("A" . ($metaRow + 1) . ":B" . ($metaRow + 1)); // Gabung A & B biar teks gak kepotong
-                $sheet->setCellValue("C" . ($metaRow + 1), ': ' . $this->totalTarget . ' Unit');
-                
-                // Baris Tanggal Cetak (Fix Timezone Jakarta)
-                $sheet->setCellValue("A" . ($metaRow + 2), 'Dicetak Pada');
-                $sheet->mergeCells("A" . ($metaRow + 2) . ":B" . ($metaRow + 2)); // Gabung A & B
-                $sheet->setCellValue("C" . ($metaRow + 2), ': ' . now()->timezone('Asia/Jakarta')->format('d/m/Y H:i:s') . ' WIB');
-                
-                // Footer Tambahan
-                $sheet->setCellValue("A" . ($metaRow + 3), 'Sistem Pendukung Keputusan (SAW & Sistem Pakar)');
-                $sheet->mergeCells("A" . ($metaRow + 3) . ":E" . ($metaRow + 3)); // Merge panjang ke kanan
+                $sheet->setCellValue("A" . ($metaRow + 2), 'Total Target Unit');
+                $sheet->mergeCells("A" . ($metaRow + 2) . ":B" . ($metaRow + 2));
+                $sheet->setCellValue("C" . ($metaRow + 2), ': ' . $this->totalTarget . ' Unit');
 
-                // Styling text
-                $sheet->getStyle("A" . ($metaRow + 1) . ":A" . ($metaRow + 2))->getFont()->setBold(true);
-                $sheet->getStyle("A" . ($metaRow + 3))->getFont()->setItalic(true)->getColor()->setARGB('FF6B7280');
+                $sheet->setCellValue("A" . ($metaRow + 3), 'Dicetak Pada');
+                $sheet->mergeCells("A" . ($metaRow + 3) . ":B" . ($metaRow + 3));
+                $sheet->setCellValue("C" . ($metaRow + 3), ': ' . now()->timezone('Asia/Jakarta')->format('d/m/Y H:i:s') . ' WIB');
+
+                $sheet->setCellValue("A" . ($metaRow + 1), 'Dicetak Oleh');
+                $sheet->mergeCells("A" . ($metaRow + 1) . ":B" . ($metaRow + 1));
+                $namaPencetak = Auth::check() ? Auth::user()->name : 'Sistem';                
+                $sheet->setCellValue("C" . ($metaRow + 1), ': ' . $namaPencetak);
+
+                $sheet->setCellValue("A" . ($metaRow + 4), 'Sistem Pendukung Keputusan (SAW & Sistem Pakar)');
+                $sheet->mergeCells("A" . ($metaRow + 4) . ":E" . ($metaRow + 4));
+
+                $sheet->getStyle("A" . ($metaRow + 1) . ":A" . ($metaRow + 3))->getFont()->setBold(true);
+                $sheet->getStyle("A" . ($metaRow + 4))->getFont()->setItalic(true)->getColor()->setARGB('FF6B7280');
             },
         ];
     }
